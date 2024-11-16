@@ -670,6 +670,36 @@ input[type=range]::-moz-range-thumb {
     justify-content: center; /* Center horizontally */
     flex-direction: column; /* Align items in a column */
 }
+.opp-card {
+    flex: 1 0 auto; /* Allow the cards to grow and shrink but maintain their width */
+    width:  250px;
+    height: 350px;
+    padding: 0.5rem; /* Add padding to maintain some spacing inside the card */
+    background-color: #2D2D2D; /* Background color for better visibility */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+    color: #FFFFFF; /* Text color for better contrast */
+    text-align: center; /* Center text */
+    display: flex; /* Use Flexbox */
+    align-items: center; /* Center vertically */
+    justify-content: center; /* Center horizontally */
+    flex-direction: column; /* Align items in a column */
+}
+.nonfic-card {
+    flex: 1 0 auto; /* Allow the cards to grow and shrink but maintain their width */
+    width:  250px;
+    height: 350px;
+    padding: 0.5rem; /* Add padding to maintain some spacing inside the card */
+    background-color: #2D2D2D; /* Background color for better visibility */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+    color: #FFFFFF; /* Text color for better contrast */
+    text-align: center; /* Center text */
+    display: flex; /* Use Flexbox */
+    align-items: center; /* Center vertically */
+    justify-content: center; /* Center horizontally */
+    flex-direction: column; /* Align items in a column */
+}
 
 .nyt-card img {
     width:220px; /* Make sure the image covers the entire card */

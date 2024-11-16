@@ -11,6 +11,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const sparkleContainer = document.getElementById('sparkleContainer');
     const bestSellersContainer = document.getElementById('bestSellersContainer');
 
+    const nonficRecommendationsContainer = document.getElementById('nonficRecommendationsContainer');
+    const scrollLeftButton_nonfic = document.getElementById('scrollLeft_nonfic');
+    const scrollRightButton_nonfic = document.getElementById('scrollRight_nonfic');
+
+    const mangaRecommendationsContainer = document.getElementById('mangaRecommendationsContainer');
+    const scrollLeftButton_manga = document.getElementById('scrollLeft_manga');
+    const scrollRightButton_manga = document.getElementById('scrollRight_manga');
+
+    const sportRecommendationsContainer = document.getElementById('sportRecommendationsContainer');
+    const scrollLeftButton_sport = document.getElementById('scrollLeft_sport');
+    const scrollRightButton_sport = document.getElementById('scrollRight_sport');
+
+    const adviceRecommendationsContainer = document.getElementById('adviceRecommendationsContainer');
+    const scrollLeftButton_advice = document.getElementById('scrollLeft_advice');
+    const scrollRightButton_advice = document.getElementById('scrollRight_advice');
+
+    const travelRecommendationsContainer = document.getElementById('travelRecommendationsContainer');
+    const scrollLeftButton_travel = document.getElementById('scrollLeft_travel');
+    const scrollRightButton_travel = document.getElementById('scrollRight_travel');
+
     const oppRecommendationsContainer = document.getElementById('oppRecommendationsContainer');
     const scrollLeft_OppRec = document.getElementById('scrollLeft_OppRec');
     const scrollRight_OppRec = document.getElementById('scrollRight_OppRec');
@@ -28,20 +48,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const limitResetTime = 3 * 60 * 60 * 1000; // Reset time in milliseconds (3 hours)
     const clickDataKey = `${username}_clickData`;
     const clickData = getClickData();
-    const countdownElement = document.getElementById('countdownTimer_rec'); // Moved here to ensure it's available in all functions
+    const countdownElement1 = document.getElementById('countdownTimer1'); // Moved here to ensure it's available in all functions
     const urlParams = new URLSearchParams(window.location.search);
     const bypassLimit = urlParams.get('bypassLimit') === 'True';
     
 
-    const startGenerateCountdown = (timeLeft) => {
-        const countdownElement = document.getElementById('countdownTimer_rec'); // Use the new ID for countdown timer
+    const startGenerateCountdown1 = (timeLeft) => {
+        const countdownElement1 = document.getElementById('countdownTimer1'); // Use the new ID for countdown timer
     
         const updateCountdown = () => {
             const currentTime = new Date().getTime();
             const timeRemaining = timeLeft - (currentTime - clickData.lastReset);
     
             if (timeRemaining <= 0) {
-                countdownElement.textContent = "You can generate recommendations again!";
+                countdownElement1.textContent = "You can generate recommendations again!";
                 generateButton.disabled = false;
                 clearInterval(generateCountdownInterval);
                 return;
@@ -51,8 +71,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
     
-            countdownElement.textContent = `Next recommendations in ${hours}h ${minutes}m ${seconds}s`;
-            countdownElement.style.fontStyle = 'italic';
+            countdownElement1.textContent = `Next recommendations in ${hours}h ${minutes}m ${seconds}s`;
+            countdownElement1.style.fontStyle = 'italic';
         };
     
         const generateCountdownInterval = setInterval(updateCountdown, 1000); // Declare generateCountdownInterval after updateCountdown
@@ -71,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (remainingRecs > 0) {
             generateButton.classList.remove('glow-effect'); // Remove the glow effect if it's still active
             generateButton.disabled = false; // Disable the button if the limit has been reached
-            countdownElement.textContent = `${remainingRecs} recommendation generations left`;
+            countdownElement1.textContent = `${remainingRecs} recommendation generations left`;
         } else {
             const timeUntilReset = limitResetTime - (now - clickData.lastReset);
             startGenerateCountdown(timeUntilReset);
@@ -189,9 +209,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
     
-    
-    
-    
     const renderPlaceholderRecommendations = () => {
         recommendationsContainer.innerHTML = '';
         for (let i = 0; i < 10; i++) {
@@ -276,7 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
             imgElement.addEventListener('error', onErrorFallback);
         });
     };
-    
+
     const fetchAndDisplayOppositeRecommendations = async () => {
         if (username) {
             const nextFetchTime = localStorage.getItem(nextFetchTimeKey);
@@ -317,14 +334,14 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const startCountdown = (nextFetchTime) => {
-        const countdownElement = document.getElementById('countdownTimer'); // Element to display the countdown
+        const countdownElement1 = document.getElementById('countdownTimer1'); // Element to display the countdown
     
         const updateCountdown = () => {
             const now = new Date().getTime();
             const timeLeft = nextFetchTime - now;
     
             if (timeLeft <= 0) {
-                countdownElement.textContent = "New recommendations will be available soon!";
+                countdownElement1.textContent = "New recommendations will be available soon!";
                 clearInterval(countdownInterval);
                 return;
             }
@@ -333,172 +350,78 @@ document.addEventListener('DOMContentLoaded', () => {
             const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
     
-            countdownElement.textContent = `New recommendations in ${hours}h ${minutes}m ${seconds}s`;
-            countdownElement.style.fontStyle = 'italic';
+            countdownElement1.textContent = `New recommendations in ${hours}h ${minutes}m ${seconds}s`;
+            countdownElement1.style.fontStyle = 'italic';
 
         };
     
         const countdownInterval = setInterval(updateCountdown, 1000); // Declare countdownInterval after updateCountdown
         updateCountdown(); // Initial call to display the countdown immediately
-    };
-    
-    
-
-    // Fetch and display opposite recommendations on page load
-    fetchAndDisplayOppositeRecommendations();
-
-    if (username) {
-        const savedRecommendationsKey = `${username}_recommendations`;
-        const savedRecommendations = localStorage.getItem(savedRecommendationsKey);
-        if (savedRecommendations) {
-            const parsedRecommendations = JSON.parse(savedRecommendations);
-            if (parsedRecommendations && parsedRecommendations.length > 0) {
-                renderRecommendations(parsedRecommendations);
-            }
-            else {
-                renderPlaceholderRecommendations();
-            }
-        } else {
-            renderPlaceholderRecommendations();
-        }
-    
-
-        generateButton.addEventListener('click', async () => {
-            if (!generateButton.classList.contains('racing-glow')) {
-                generateButton.classList.add('racing-glow'); // Add the racing border animation
-                generateButton.textContent = 'Generating Recommendations...';
-
-            }
-            generateButton.disabled = true;
-            const now = Date.now();
-            generateButton.classList.remove('glow-button');
-
-            if (now - clickData.lastReset >= limitResetTime) {
-                clickData.count = 0;
-                clickData.lastReset = now;
-                updateClickData(clickData);
-            }
-    
-            if (!bypassLimit) {
-                if (clickData.count >= clickLimit) {
-                    const timeUntilReset = limitResetTime - (now - clickData.lastReset);
-                    startGenerateCountdown(timeUntilReset);
-                    generateButton.classList.remove('glow-button');
-
-                    console.log('Click limit reached. Please wait until the countdown ends.');
-                    return;
-                }
-                clickData.count += 1;
-                updateClickData(clickData);
-                updateRecommendationStatus(clickData);
-            }
-            // Proceed with generating recommendations
-            try {
-                //showSparkles();
-                const response = await fetch(`/api/recommendations/${username}`);
-                const data = await response.json();
-    
-                console.log('Recommendations response:', data);
-    
-                if (data.success && data.recommendations.length > 0) {
-                    localStorage.setItem(`${username}_recommendations`, JSON.stringify(data.recommendations));
-                    renderRecommendations(data.recommendations);
-                } else {
-                    console.error('No recommendations found or failed to fetch recommendations:', data.message);
-                }
-            } catch (error) {
-                renderPlaceholderRecommendations();
-                console.error('Error fetching recommendations:', error);
-            } finally {
-                hideSparkles();
-                generateButton.classList.remove('racing-glow'); // Remove the racing border animation
-                generateButton.classList.add('glow-button');
-                generateButton.textContent = 'Generate Recommendations'; // Reset the text
-
-
-            }
-        });
-}      else{
-    renderPlaceholderRecommendations();
-}
-    const showArrow = (arrowButton) => {
-        arrowButton.classList.add('visible');
-    };
-
-    const hideArrow = (arrowButton) => {
-        arrowButton.classList.remove('visible');
-    };
-
-    scrollLeftButton.addEventListener('mouseenter', () => showArrow(scrollLeftButton));
-    scrollLeftButton.addEventListener('mouseleave', () => hideArrow(scrollLeftButton));
-
-    scrollRightButton.addEventListener('mouseenter', () => showArrow(scrollRightButton));
-    scrollRightButton.addEventListener('mouseleave', () => hideArrow(scrollRightButton));
-
-    document.querySelector('.arrow-hover-region.left').addEventListener('mouseenter', () => showArrow(scrollLeftButton));
-    document.querySelector('.arrow-hover-region.left').addEventListener('mouseleave', () => hideArrow(scrollLeftButton));
-
-    document.querySelector('.arrow-hover-region.right').addEventListener('mouseenter', () => showArrow(scrollRightButton));
-    document.querySelector('.arrow-hover-region.right').addEventListener('mouseleave', () => hideArrow(scrollRightButton));
-
-    scrollLeftButton.addEventListener('click', () => {
-        recommendationsContainer.scrollBy({
-            top: 0,
-            left: -recommendationsContainer.clientWidth,
-            behavior: 'smooth'
-        });
-    });
-
-    scrollRightButton.addEventListener('click', () => {
-        recommendationsContainer.scrollBy({
-            top: 0,
-            left: recommendationsContainer.clientWidth,
-            behavior: 'smooth'
-        });
-    });
-
-    scrollLeftButton_nyt.addEventListener('click', () => {
-        bestSellersContainer.scrollBy({
-            top: 0,
-            left: -recommendationsContainer.clientWidth,
-            behavior: 'smooth'
-        });
-    });
-
-    scrollRightButton_nyt.addEventListener('click', () => {
-        bestSellersContainer.scrollBy({
-            top: 0,
-            left: recommendationsContainer.clientWidth,
-            behavior: 'smooth'
-        });
-    });
-
-    scrollLeft_OppRec.addEventListener('mouseenter', () => showArrow(scrollLeft_OppRec));
-    scrollLeft_OppRec.addEventListener('mouseleave', () => hideArrow(scrollLeft_OppRec));
-
-    scrollRight_OppRec.addEventListener('mouseenter', () => showArrow(scrollRight_OppRec));
-    scrollRight_OppRec.addEventListener('mouseleave', () => hideArrow(scrollRight_OppRec));
-
-    scrollLeft_OppRec.addEventListener('click', () => {
-        oppRecommendationsContainer.scrollBy({
-            top: 0,
-            left: -oppRecommendationsContainer.clientWidth,
-            behavior: 'smooth'
-        });
-    });
-
-    scrollRight_OppRec.addEventListener('click', () => {
-        oppRecommendationsContainer.scrollBy({
-            top: 0,
-            left: oppRecommendationsContainer.clientWidth,
-            behavior: 'smooth'
-        });
-    });
-
+    }
 
 async function fetchNYTimesBestSellers() {
-    const apiKey = '07KGzNSRt9XlvFc8Esd006b7fqiGA8cc'; // Replace with your actual API key
+    const apiKey = '86azpBiWNRsgC7VfkBt3sLWizG3ZK09x'; // Replace with your actual API key
     const response = await fetch(`https://api.nytimes.com/svc/books/v3/lists/current/hardcover-fiction.json?api-key=${apiKey}`);
+    const data = await response.json();
+    return data.results.books.map(book => ({
+        title: book.title,
+        authors: book.author,
+        thumbnail: book.book_image,
+        isbn: book.primary_isbn13
+    }));
+}
+
+async function fetchNonficRecommendations() {
+    const apiKey = 'bfCDE8LrsvR6XMQslOnyHAhw20NUiahY'; // Replace with your actual API key
+    const response = await fetch(`https://api.nytimes.com/svc/books/v3/lists/current/combined-print-and-e-book-nonfiction.json?api-key=${apiKey}`);
+    const data = await response.json();
+    return data.results.books.map(book => ({
+        title: book.title,
+        authors: book.author,
+        thumbnail: book.book_image,
+        isbn: book.primary_isbn13
+    }));
+}
+
+async function fetchMangaRecommendations() {
+    const apiKey = '86azpBiWNRsgC7VfkBt3sLWizG3ZK09x'; // Replace with your actual API key
+    const response = await fetch(`https://api.nytimes.com/svc/books/v3/lists/current/graphic-books-and-manga.json?api-key=${apiKey}`);
+    const data = await response.json();
+    return data.results.books.map(book => ({
+        title: book.title,
+        authors: book.author,
+        thumbnail: book.book_image,
+        isbn: book.primary_isbn13
+    }));
+}
+
+async function fetchAdviceRecommendations() {
+    const apiKey = '07KGzNSRt9XlvFc8Esd006b7fqiGA8cc'; // Replace with your actual API key
+    const response = await fetch(`https://api.nytimes.com/svc/books/v3/lists/current/advice-how-to-and-miscellaneous.json?api-key=${apiKey}`);
+    const data = await response.json();
+    return data.results.books.map(book => ({
+        title: book.title,
+        authors: book.author,
+        thumbnail: book.book_image,
+        isbn: book.primary_isbn13
+    }));
+}
+
+async function fetchTravelRecommendations() {
+    const apiKey = '07KGzNSRt9XlvFc8Esd006b7fqiGA8cc'; // Replace with your actual API key
+    const response = await fetch(`https://api.nytimes.com/svc/books/v3/lists/current/travel.json?api-key=${apiKey}`);
+    const data = await response.json();
+    return data.results.books.map(book => ({
+        title: book.title,
+        authors: book.author,
+        thumbnail: book.book_image,
+        isbn: book.primary_isbn13
+    }));
+}
+
+async function fetchSportRecommendations() {
+    const apiKey = 'MNoNQ9JLnfUAQwenhLuZZNn103akVIKr'; // Replace with your actual API key
+    const response = await fetch(`https://api.nytimes.com/svc/books/v3/lists/current/sports.json?api-key=${apiKey}`);
     const data = await response.json();
     return data.results.books.map(book => ({
         title: book.title,
@@ -515,7 +438,40 @@ fetchNYTimesBestSellers().then(books => {
     renderPlaceholderRecommendations();
 });
 
+fetchNonficRecommendations().then(books => {
+    renderNonficRecommendations(books);
+}).catch(error => {
+    console.error('Error fetching Nonfiction recommendations:', error);
+    renderPlaceholderRecommendations();
+});
 
+fetchMangaRecommendations().then(books => {
+    renderMangaRecommendations(books);
+}).catch(error => {
+    console.error('Error fetching Graphic Books and Manga recommendations:', error);
+    renderPlaceholderRecommendations();
+});
+
+fetchSportRecommendations().then(books => {
+    renderSportRecommendations(books);
+}).catch(error => {
+    console.error('Error fetching Sports recommendations:', error);
+    renderPlaceholderRecommendations();
+});
+
+fetchAdviceRecommendations().then(books => {
+    renderAdviceRecommendations(books);
+}).catch(error => {
+    console.error('Error fetching Advice, How-To, and Miscellaneous books:', error);
+    renderPlaceholderRecommendations();
+});
+
+fetchTravelRecommendations().then(books => {
+    renderTravelRecommendations(books);
+}).catch(error => {
+    console.error('Error fetching Travel Stories:', error);
+    renderPlaceholderRecommendations();
+});
 
 const renderNYTimesBestSellers = (books) => {
     bestSellersContainer.innerHTML = '';
@@ -537,4 +493,103 @@ const renderNYTimesBestSellers = (books) => {
     });
 };
 
+const renderNonficRecommendations = (books) => {
+    nonficRecommendationsContainer.innerHTML = '';
+    books.forEach(book => {
+        const bookElement = document.createElement('div');
+        bookElement.classList.add('nonfic-card', 'p-4', 'bg-gray-100', 'rounded', 'shadow', 'book-card');
+        bookElement.innerHTML = `
+            <div class="relative group">
+                <a href="../html/book.html?isbn=${book.isbn}" class="block relative overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition duration-300 ease-in-out group">
+                    <img src="${book.thumbnail}" alt="${book.title}" class="w-30 h-30 object-cover">
+                    <div class="absolute bottom-0 left-0 w-full p-4 bg-black bg-opacity-60 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out">
+                        <h2 class="text-lg font-bold">${book.title}</h2>
+                        <p class="text-gray-300">by ${book.authors}</p>
+                    </div>
+                </a>
+            </div>
+        `;
+        nonficRecommendationsContainer.appendChild(bookElement);
+    });
+};
+
+const renderMangaRecommendations = (books) => {
+    mangaRecommendationsContainer.innerHTML = '';
+    books.forEach(book => {
+        const bookElement = document.createElement('div');
+        bookElement.classList.add('manga-card', 'p-4', 'bg-gray-100', 'rounded', 'shadow', 'book-card');
+        bookElement.innerHTML = `
+            <div class="relative group">
+                <a href="../html/book.html?isbn=${book.isbn}" class="block relative overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition duration-300 ease-in-out group">
+                    <img src="${book.thumbnail}" alt="${book.title}" class="w-30 h-30 object-cover">
+                    <div class="absolute bottom-0 left-0 w-full p-4 bg-black bg-opacity-60 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out">
+                        <h2 class="text-lg font-bold">${book.title}</h2>
+                        <p class="text-gray-300">by ${book.authors}</p>
+                    </div>
+                </a>
+            </div>
+        `;
+        mangaRecommendationsContainer.appendChild(bookElement);
+    });
+};
+
+const renderSportRecommendations = (books) => {
+    sportRecommendationsContainer.innerHTML = '';
+    books.forEach(book => {
+        const bookElement = document.createElement('div');
+        bookElement.classList.add('sport-card', 'p-4', 'bg-gray-100', 'rounded', 'shadow', 'book-card');
+        bookElement.innerHTML = `
+            <div class="relative group">
+                <a href="../html/book.html?isbn=${book.isbn}" class="block relative overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition duration-300 ease-in-out group">
+                    <img src="${book.thumbnail}" alt="${book.title}" class="w-30 h-30 object-cover">
+                    <div class="absolute bottom-0 left-0 w-full p-4 bg-black bg-opacity-60 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out">
+                        <h2 class="text-lg font-bold">${book.title}</h2>
+                        <p class="text-gray-300">by ${book.authors}</p>
+                    </div>
+                </a>
+            </div>
+        `;
+        sportRecommendationsContainer.appendChild(bookElement);
+    });
+};
+
+const renderAdviceRecommendations = (books) => {
+    adviceRecommendationsContainer.innerHTML = '';
+    books.forEach(book => {
+        const bookElement = document.createElement('div');
+        bookElement.classList.add('advice-card', 'p-4', 'bg-gray-100', 'rounded', 'shadow', 'book-card');
+        bookElement.innerHTML = `
+            <div class="relative group">
+                <a href="../html/book.html?isbn=${book.isbn}" class="block relative overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition duration-300 ease-in-out group">
+                    <img src="${book.thumbnail}" alt="${book.title}" class="w-30 h-30 object-cover">
+                    <div class="absolute bottom-0 left-0 w-full p-4 bg-black bg-opacity-60 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out">
+                        <h2 class="text-lg font-bold">${book.title}</h2>
+                        <p class="text-gray-300">by ${book.authors}</p>
+                    </div>
+                </a>
+            </div>
+        `;
+        adviceRecommendationsContainer.appendChild(bookElement);
+    });
+};
+
+const renderTravelRecommendations = (books) => {
+    travelRecommendationsContainer.innerHTML = '';
+    books.forEach(book => {
+        const bookElement = document.createElement('div');
+        bookElement.classList.add('travel-card', 'p-4', 'bg-gray-100', 'rounded', 'shadow', 'book-card');
+        bookElement.innerHTML = `
+            <div class="relative group">
+                <a href="../html/book.html?isbn=${book.isbn}" class="block relative overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition duration-300 ease-in-out group">
+                    <img src="${book.thumbnail}" alt="${book.title}" class="w-30 h-30 object-cover">
+                    <div class="absolute bottom-0 left-0 w-full p-4 bg-black bg-opacity-60 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out">
+                        <h2 class="text-lg font-bold">${book.title}</h2>
+                        <p class="text-gray-300">by ${book.authors}</p>
+                    </div>
+                </a>
+            </div>
+        `;
+        travelRecommendationsContainer.appendChild(bookElement);
+    });
+};
 });

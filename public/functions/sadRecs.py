@@ -1,54 +1,31 @@
+from flask import Flask, jsonify
 import requests
-import sys
-import json
-import os
-from dotenv import load_dotenv
 
-# Load environment variables from .env file
+app = Flask(__name__)
 
-# Google Books API URL and API Key
-GOOGLE_BOOKS_API_URL = "https://www.googleapis.com/books/v1/volumes"  # Replace with your actual server URL
+GOOGLE_BOOKS_API_URL = "https://www.googleapis.com/books/v1/volumes"
 API_KEY = 'AIzaSyCFDaqjpgA8K_NqqCw93xorS3zumc_52u8'
 
-def get_book_info():
-    sad_keywords = ['sad', 'tragic', 'heartbreaking', 'melancholy', 'grief', 'loss', 'tearjerker']
-    
-    # Placeholder for storing books
-    sad_books = []
-    
-    # Loop through each keyword and fetch books
-    for keyword in sad_keywords:
+@app.route('/api/adventure-books')
+def get_adventure_books():
+    adventure_keywords = ['adventure', 'exploration', 'journey', 'quest', 'expedition', 'danger', 'thrilling']
+    adventure_books = []
+
+    for keyword in adventure_keywords:
         response = requests.get(GOOGLE_BOOKS_API_URL, params={'q': keyword, 'key': API_KEY})
         if response.status_code == 200:
             books_data = response.json()
-            # Assuming 'items' contains the list of books from the Google Books API response
             books = books_data.get('items', [])
-            sad_books.extend(books)
-        else:
-            print(f"Failed to fetch books for keyword: {keyword}, Status Code: {response.status_code}")
+            adventure_books.extend(books)
 
-    # Prepare output format
-    books_output = []
-    for book in sad_books:
-        book_info = {
-            'title': book['volumeInfo']['title'],
-            'authors': book['volumeInfo'].get('authors', []),
-            'description': book['volumeInfo'].get('description', ''),
-            'categories': book['volumeInfo'].get('categories', []),
-            'publishedDate': book['volumeInfo'].get('publishedDate', ''),
-            'thumbnail': book['volumeInfo'].get('imageLinks', {}).get('thumbnail', '')
-        }
-        books_output.append(book_info)
+    books_output = [{
+        'title': book['volumeInfo'].get('title', 'No Title'),
+        'authors': book['volumeInfo'].get('authors', []),
+        'description': book['volumeInfo'].get('description', ''),
+        'thumbnail': book['volumeInfo'].get('imageLinks', {}).get('thumbnail', '')
+    } for book in adventure_books]
 
-    return books_output
+    return jsonify(books_output)
 
-# Example usage
 if __name__ == "__main__":
-    try:
-        # Fetch sad books and print them as JSON
-        recommendations = get_book_info()
-        print(json.dumps(recommendations))
-    except Exception as e:
-        print(f"Error: {str(e)}", file=sys.stderr)
-        # Return an empty list if an error occurs
-        print(json.dumps([]))
+    app.run(debug=True)
